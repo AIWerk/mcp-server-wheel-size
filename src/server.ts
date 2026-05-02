@@ -45,7 +45,7 @@ export function toolError(error: unknown) {
       error.body === null || error.body === undefined
         ? ''
         : ` — body: ${JSON.stringify(error.body)}`;
-    message = `Wheel-Size API error ${error.status} ${error.statusText}${body}`;
+    message = `${error.message}${body}`;
   } else if (error instanceof Error) {
     message = error.message;
   } else {
