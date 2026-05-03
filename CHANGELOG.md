@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-05-03
+
+### Internal
+- `vitest.config.ts`: switched to `pool: 'threads'` with `singleThread: true` to prevent worker orphan processes on parent SIGKILL; added `testTimeout: 10000`, `hookTimeout: 5000`, `teardownTimeout: 3000`
+
 ## [0.3.1] - 2026-05-03
 
 ### Fixed
