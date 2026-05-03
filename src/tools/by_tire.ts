@@ -6,22 +6,26 @@ import { fetchApi } from '../api.js';
 
 const sectionWidthMm = z
   .number()
+  .positive()
   .describe(
-    'Tyre section width in mm (e.g. 245). ' +
+    'Tyre section width in mm (e.g. 245). Must be positive. ' +
     'Use list-tire-section-widths to enumerate valid values.',
   );
 const sectionWidthMmOpt = sectionWidthMm.optional();
 const aspectRatioReq = z
   .number()
   .int()
+  .min(1)
+  .max(100)
   .describe(
-    'Aspect ratio as a percentage integer (e.g. 45 for a 45-series tyre). ' +
+    'Aspect ratio as a percentage integer 1-100 (e.g. 45 for a 45-series tyre). ' +
     'Use list-tire-aspect-ratios to enumerate valid values.',
   );
 const aspectRatioOpt = aspectRatioReq.optional();
 const rimDiameterReq = z
   .number()
-  .describe('Rim diameter in inches (e.g. 18). Use list-tire-rim-diameters to enumerate valid values.');
+  .positive()
+  .describe('Rim diameter in inches (e.g. 18). Must be positive. Use list-tire-rim-diameters to enumerate valid values.');
 const rimDiameterOpt = rimDiameterReq.optional();
 const region = z
   .string()
@@ -30,10 +34,10 @@ const region = z
 const limitOpt = z
   .number()
   .int()
-  .min(0)
+  .min(1)
   .max(100)
   .optional()
-  .describe('Maximum results to return (0-100).');
+  .describe('Maximum results to return (1-100).');
 const offsetOpt = z
   .number()
   .int()

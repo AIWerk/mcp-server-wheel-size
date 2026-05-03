@@ -1,6 +1,6 @@
 {
   "name": "@aiwerk/mcp-server-wheel-size",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Wheel-Size.com API MCP server — vehicle wheel, tyre and fitment data lookup",
   "type": "module",
   "main": "dist/src/server.js",
@@ -16,7 +16,7 @@
     "dev": "tsc --watch",
     "pretest": "npm run gen-version",
     "test": "vitest run",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run build && npm test && node scripts/gen-tool-list.mjs"
   },
   "engines": {
     "node": ">=18.0.0"

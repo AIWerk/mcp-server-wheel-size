@@ -15,24 +15,32 @@ const boltPatternReq = z
   );
 const rimDiameterReq = z
   .number()
-  .describe('Rim diameter in inches (e.g. 18). Required.');
+  .positive()
+  .describe('Rim diameter in inches (e.g. 18). Required. Must be positive.');
 const rimWidthReq = z
   .number()
-  .describe('Rim width in inches from bead seat to bead seat (e.g. 8.0). Required.');
+  .positive()
+  .describe('Rim width in inches from bead seat to bead seat (e.g. 8.0). Required. Must be positive.');
 const rimOffsetReq = z
   .number()
-  .describe('Rim offset (ET) in mm (e.g. 35). Distance from mounting face to rim centre-line. Required.');
+  .min(-100)
+  .max(100)
+  .describe('Rim offset (ET) in mm, range -100 to 100 (e.g. 35). Distance from mounting face to rim centre-line. Required.');
 const sectionWidthMmReq = z
   .number()
-  .describe('Tyre section width in mm (e.g. 245). Required.');
+  .positive()
+  .describe('Tyre section width in mm (e.g. 245). Required. Must be positive.');
 const aspectRatioReq = z
   .number()
   .int()
-  .describe('Tyre aspect ratio as a percentage integer (e.g. 45). Required.');
+  .min(1)
+  .max(100)
+  .describe('Tyre aspect ratio as a percentage integer 1-100 (e.g. 45). Required.');
 const cbOpt = z
   .number()
+  .positive()
   .optional()
-  .describe('Centre bore diameter in mm (e.g. 66.5). Narrows results to matching bore size.');
+  .describe('Centre bore diameter in mm (e.g. 66.5). Must be positive. Narrows results to matching bore size.');
 const fdOpt = z
   .number()
   .optional()
@@ -83,9 +91,10 @@ const sortOpt = z
 const limitOpt = z
   .number()
   .int()
-  .min(0)
+  .min(1)
+  .max(100)
   .optional()
-  .describe('Maximum results to return.');
+  .describe('Maximum results to return (1-100).');
 const offsetOpt = z
   .number()
   .int()

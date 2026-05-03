@@ -4,27 +4,35 @@ import { fetchApi } from '../api.js';
 // Shared optional rim filter fields used across list-* enumeration tools
 const rimDiameter = z
   .number()
+  .positive()
   .optional()
-  .describe('Rim diameter in inches (e.g. 18). Filters results to this diameter only.');
+  .describe('Rim diameter in inches (e.g. 18). Must be positive. Filters results to this diameter only.');
 const rimWidth = z
   .number()
+  .positive()
   .optional()
-  .describe('Rim width in inches from bead seat to bead seat (e.g. 8.0).');
+  .describe('Rim width in inches from bead seat to bead seat (e.g. 8.0). Must be positive.');
 const rimOffsetExact = z
   .number()
+  .min(-100)
+  .max(100)
   .optional()
   .describe(
-    'Exact rim offset (ET) in mm. The distance between the wheel mounting surface and the centre-line of the rim. ' +
+    'Exact rim offset (ET) in mm, range -100 to 100 (e.g. 35). The distance between the wheel mounting surface and the centre-line of the rim. ' +
     'Do not combine with rim_offset_min/rim_offset_max.',
   );
 const rimOffsetMin = z
   .number()
+  .min(-100)
+  .max(100)
   .optional()
-  .describe('Minimum rim offset (ET) in mm. Use instead of rim_offset for a range query.');
+  .describe('Minimum rim offset (ET) in mm, range -100 to 100. Use instead of rim_offset for a range query.');
 const rimOffsetMax = z
   .number()
+  .min(-100)
+  .max(100)
   .optional()
-  .describe('Maximum rim offset (ET) in mm. Use instead of rim_offset for a range query.');
+  .describe('Maximum rim offset (ET) in mm, range -100 to 100. Use instead of rim_offset for a range query.');
 const boltPatternOpt = z
   .string()
   .optional()
@@ -40,16 +48,19 @@ const boltPatternReq = z
   );
 const cbExact = z
   .number()
+  .positive()
   .optional()
-  .describe('Centre bore diameter in mm (e.g. 66.5). Do not combine with cb_min/cb_max.');
+  .describe('Centre bore diameter in mm (e.g. 66.5). Must be positive. Do not combine with cb_min/cb_max.');
 const cbMin = z
   .number()
+  .positive()
   .optional()
-  .describe('Minimum centre bore in mm. Use instead of cb for a range query.');
+  .describe('Minimum centre bore in mm. Must be positive. Use instead of cb for a range query.');
 const cbMax = z
   .number()
+  .positive()
   .optional()
-  .describe('Maximum centre bore in mm. Use instead of cb for a range query.');
+  .describe('Maximum centre bore in mm. Must be positive. Use instead of cb for a range query.');
 const studHoles = z
   .number()
   .int()
@@ -66,10 +77,10 @@ const region = z
 const limitOpt = z
   .number()
   .int()
-  .min(0)
+  .min(1)
   .max(100)
   .optional()
-  .describe('Maximum results to return (0-100). Defaults to API default when omitted.');
+  .describe('Maximum results to return (1-100). Defaults to API default when omitted.');
 const offsetOpt = z
   .number()
   .int()
@@ -78,24 +89,29 @@ const offsetOpt = z
   .describe('Number of results to skip for pagination.');
 const fd = z
   .number()
+  .positive()
   .optional()
-  .describe('Fastener thread diameter in mm. Narrows results to wheels with matching lug-bolt thread size.');
+  .describe('Fastener thread diameter in mm. Must be positive. Narrows results to wheels with matching lug-bolt thread size.');
 const rimDiameterMin = z
   .number()
+  .positive()
   .optional()
-  .describe('Minimum rim diameter in inches. Use instead of rim_diameter for a range query.');
+  .describe('Minimum rim diameter in inches. Must be positive. Use instead of rim_diameter for a range query.');
 const rimDiameterMax = z
   .number()
+  .positive()
   .optional()
-  .describe('Maximum rim diameter in inches. Use instead of rim_diameter for a range query.');
+  .describe('Maximum rim diameter in inches. Must be positive. Use instead of rim_diameter for a range query.');
 const rimWidthMin = z
   .number()
+  .positive()
   .optional()
-  .describe('Minimum rim width in inches. Use instead of rim_width for a range query.');
+  .describe('Minimum rim width in inches. Must be positive. Use instead of rim_width for a range query.');
 const rimWidthMax = z
   .number()
+  .positive()
   .optional()
-  .describe('Maximum rim width in inches. Use instead of rim_width for a range query.');
+  .describe('Maximum rim width in inches. Must be positive. Use instead of rim_width for a range query.');
 
 // list-rim-bolt-patterns
 
@@ -150,6 +166,11 @@ export type ListRimCentreBoresArgs = {
 };
 
 export async function listRimCentreBores(args: ListRimCentreBoresArgs) {
+  const hasExact = args.rim_offset !== undefined;
+  const hasRange = args.rim_offset_min !== undefined || args.rim_offset_max !== undefined;
+  if (hasExact && hasRange) {
+    throw new Error('Cannot combine rim_offset (exact) with rim_offset_min/max (range). Use one or the other.');
+  }
   return fetchApi('/by_rim/cb/', args as Record<string, string | number | boolean | undefined | null>);
 }
 
@@ -243,6 +264,16 @@ export type SearchByRimArgs = {
 };
 
 export async function searchByRim(args: SearchByRimArgs) {
+  const hasExactOffset = args.rim_offset !== undefined;
+  const hasRangeOffset = args.rim_offset_min !== undefined || args.rim_offset_max !== undefined;
+  if (hasExactOffset && hasRangeOffset) {
+    throw new Error('Cannot combine rim_offset (exact) with rim_offset_min/max (range). Use one or the other.');
+  }
+  const hasExactCb = args.cb !== undefined;
+  const hasRangeCb = args.cb_min !== undefined || args.cb_max !== undefined;
+  if (hasExactCb && hasRangeCb) {
+    throw new Error('Cannot combine cb (exact) with cb_min/cb_max (range). Use one or the other.');
+  }
   return fetchApi('/by_rim/search/', args as Record<string, string | number | boolean | undefined | null>);
 }
 
@@ -291,5 +322,15 @@ export type SearchModificationsByRimArgs = {
 };
 
 export async function searchModificationsByRim(args: SearchModificationsByRimArgs) {
+  const hasExactOffset = args.rim_offset !== undefined;
+  const hasRangeOffset = args.rim_offset_min !== undefined || args.rim_offset_max !== undefined;
+  if (hasExactOffset && hasRangeOffset) {
+    throw new Error('Cannot combine rim_offset (exact) with rim_offset_min/max (range). Use one or the other.');
+  }
+  const hasExactCb = args.cb !== undefined;
+  const hasRangeCb = args.cb_min !== undefined || args.cb_max !== undefined;
+  if (hasExactCb && hasRangeCb) {
+    throw new Error('Cannot combine cb (exact) with cb_min/cb_max (range). Use one or the other.');
+  }
   return fetchApi('/by_rim/search/modifications/', args as Record<string, string | number | boolean | undefined | null>);
 }

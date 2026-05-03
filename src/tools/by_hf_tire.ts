@@ -7,35 +7,40 @@ import { fetchApi } from '../api.js';
 
 const overallDiameterOpt = z
   .number()
+  .positive()
   .optional()
   .describe(
-    'Overall outside diameter of the inflated tyre in inches (e.g. 33.0 for a 33-inch tyre). ' +
+    'Overall outside diameter of the inflated tyre in inches (e.g. 33.0 for a 33-inch tyre). Must be positive. ' +
     'Part of the HF size notation: OD x SW R RD (e.g. 33x12.5R15). ' +
     'Use list-hf-tire-overall-diameters to enumerate valid values.',
   );
 const overallDiameterReq = z
   .number()
+  .positive()
   .describe(
-    'Overall outside diameter of the inflated tyre in inches (e.g. 33.0). Required. ' +
+    'Overall outside diameter of the inflated tyre in inches (e.g. 33.0). Required. Must be positive. ' +
     'Part of the HF size notation: OD x SW R RD (e.g. 33x12.5R15).',
   );
 const sectionWidthInchesOpt = z
   .number()
+  .positive()
   .optional()
   .describe(
-    'Tyre section width in INCHES (e.g. 12.5). ' +
+    'Tyre section width in INCHES (e.g. 12.5). Must be positive. ' +
     'Note: this differs from standard by_tire tools where section_width is in mm. ' +
     'Use list-hf-tire-section-widths to enumerate valid values.',
   );
 const sectionWidthInchesReq = z
   .number()
+  .positive()
   .describe(
-    'Tyre section width in INCHES (e.g. 12.5). Required. ' +
+    'Tyre section width in INCHES (e.g. 12.5). Required. Must be positive. ' +
     'Note: this differs from standard by_tire tools where section_width is in mm.',
   );
 const rimDiameterReq = z
   .number()
-  .describe('Rim diameter in inches (e.g. 15). Required. Use list-hf-tire-rim-diameters to enumerate valid values.');
+  .positive()
+  .describe('Rim diameter in inches (e.g. 15). Required. Must be positive. Use list-hf-tire-rim-diameters to enumerate valid values.');
 const rimDiameterOpt = rimDiameterReq.optional();
 const region = z
   .string()
@@ -44,10 +49,10 @@ const region = z
 const limitOpt = z
   .number()
   .int()
-  .min(0)
+  .min(1)
   .max(100)
   .optional()
-  .describe('Maximum results to return (0-100).');
+  .describe('Maximum results to return (1-100).');
 const offsetOpt = z
   .number()
   .int()

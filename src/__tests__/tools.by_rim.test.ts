@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import * as z from 'zod';
 import {
   listRimBoltPatterns,
   listRimCentreBores,
@@ -7,6 +8,9 @@ import {
   listRimWidths,
   searchByRim,
   searchModificationsByRim,
+  listRimCentresBoresInput,
+  searchByRimInput,
+  searchModificationsByRimInput,
 } from '../tools/by_rim.js';
 import { WheelSizeApiError } from '../api.js';
 
@@ -131,5 +135,120 @@ describe('searchModificationsByRim', () => {
     await expect(
       searchModificationsByRim({ make: 'audi', model: 'a4', bolt_pattern: '5x112' }),
     ).rejects.toThrow(WheelSizeApiError);
+  });
+});
+
+// ---- Boundary validation (Zod schema) ----
+
+describe('by_rim schema boundary validation', () => {
+  const searchSchema = z.object(searchByRimInput);
+
+  it('rejects negative rim_diameter', () => {
+    const r = searchSchema.safeParse({ bolt_pattern: '5x112', rim_diameter: -1 });
+    expect(r.success).toBe(false);
+  });
+  it('rejects zero rim_diameter', () => {
+    const r = searchSchema.safeParse({ bolt_pattern: '5x112', rim_diameter: 0 });
+    expect(r.success).toBe(false);
+  });
+  it('accepts positive rim_diameter', () => {
+    const r = searchSchema.safeParse({ bolt_pattern: '5x112', rim_diameter: 18 });
+    expect(r.success).toBe(true);
+  });
+  it('rejects negative rim_width', () => {
+    const r = searchSchema.safeParse({ bolt_pattern: '5x112', rim_width: -0.5 });
+    expect(r.success).toBe(false);
+  });
+  it('accepts ET offset in valid range (positive)', () => {
+    const r = searchSchema.safeParse({ bolt_pattern: '5x112', rim_offset: 35 });
+    expect(r.success).toBe(true);
+  });
+  it('accepts ET offset in valid range (negative deep-dish)', () => {
+    const r = searchSchema.safeParse({ bolt_pattern: '5x112', rim_offset: -25 });
+    expect(r.success).toBe(true);
+  });
+  it('rejects ET offset below -100', () => {
+    const r = searchSchema.safeParse({ bolt_pattern: '5x112', rim_offset: -101 });
+    expect(r.success).toBe(false);
+  });
+  it('rejects ET offset above 100', () => {
+    const r = searchSchema.safeParse({ bolt_pattern: '5x112', rim_offset: 101 });
+    expect(r.success).toBe(false);
+  });
+  it('rejects non-positive cb', () => {
+    const r = searchSchema.safeParse({ bolt_pattern: '5x112', cb: 0 });
+    expect(r.success).toBe(false);
+  });
+  it('rejects limit of 0', () => {
+    const r = searchSchema.safeParse({ bolt_pattern: '5x112', limit: 0 });
+    expect(r.success).toBe(false);
+  });
+  it('rejects limit above 100', () => {
+    const r = searchSchema.safeParse({ bolt_pattern: '5x112', limit: 101 });
+    expect(r.success).toBe(false);
+  });
+  it('accepts limit of 1', () => {
+    const r = searchSchema.safeParse({ bolt_pattern: '5x112', limit: 1 });
+    expect(r.success).toBe(true);
+  });
+});
+
+// ---- Mutex constraints (handler level) ----
+
+describe('listRimCentreBores mutex', () => {
+  it('throws when rim_offset combined with rim_offset_min', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }));
+    await expect(
+      listRimCentreBores({ rim_offset: 35, rim_offset_min: 20 }),
+    ).rejects.toThrow('Cannot combine rim_offset');
+  });
+  it('throws when rim_offset combined with rim_offset_max', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }));
+    await expect(
+      listRimCentreBores({ rim_offset: 35, rim_offset_max: 50 }),
+    ).rejects.toThrow('Cannot combine rim_offset');
+  });
+  it('does not throw when only rim_offset is set', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ data: [] }), { status: 200, headers: { 'content-type': 'application/json' } }),
+    );
+    await expect(listRimCentreBores({ rim_offset: 35 })).resolves.toBeDefined();
+  });
+});
+
+describe('searchByRim mutex', () => {
+  it('throws when rim_offset combined with rim_offset_min', async () => {
+    await expect(
+      searchByRim({ bolt_pattern: '5x112', rim_offset: 35, rim_offset_min: 20 }),
+    ).rejects.toThrow('Cannot combine rim_offset');
+  });
+  it('throws when cb combined with cb_min', async () => {
+    await expect(
+      searchByRim({ bolt_pattern: '5x112', cb: 66.5, cb_min: 60 }),
+    ).rejects.toThrow('Cannot combine cb');
+  });
+  it('throws when cb combined with cb_max', async () => {
+    await expect(
+      searchByRim({ bolt_pattern: '5x112', cb: 66.5, cb_max: 70 }),
+    ).rejects.toThrow('Cannot combine cb');
+  });
+  it('does not throw with cb range only', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ data: [] }), { status: 200, headers: { 'content-type': 'application/json' } }),
+    );
+    await expect(searchByRim({ bolt_pattern: '5x112', cb_min: 60, cb_max: 70 })).resolves.toBeDefined();
+  });
+});
+
+describe('searchModificationsByRim mutex', () => {
+  it('throws when rim_offset combined with rim_offset_max', async () => {
+    await expect(
+      searchModificationsByRim({ make: 'audi', model: 'a4', bolt_pattern: '5x112', rim_offset: 35, rim_offset_max: 50 }),
+    ).rejects.toThrow('Cannot combine rim_offset');
+  });
+  it('throws when cb combined with cb_min', async () => {
+    await expect(
+      searchModificationsByRim({ make: 'audi', model: 'a4', bolt_pattern: '5x112', cb: 66.5, cb_min: 60 }),
+    ).rejects.toThrow('Cannot combine cb');
   });
 });

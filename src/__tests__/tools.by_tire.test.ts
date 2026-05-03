@@ -1,10 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import * as z from 'zod';
 import {
   listTireAspectRatios,
   listTireRimDiameters,
   listTireSectionWidths,
   searchByTire,
   searchModificationsByTire,
+  searchByTireInput,
 } from '../tools/by_tire.js';
 import { WheelSizeApiError } from '../api.js';
 
@@ -111,5 +113,42 @@ describe('searchModificationsByTire', () => {
         make: 'audi', model: 'a4', section_width: 0, aspect_ratio: 0, rim_diameter: 0,
       }),
     ).rejects.toThrow(WheelSizeApiError);
+  });
+});
+
+// ---- Boundary validation (Zod schema) ----
+
+describe('by_tire schema boundary validation', () => {
+  const searchSchema = z.object(searchByTireInput);
+
+  it('rejects negative section_width', () => {
+    expect(searchSchema.safeParse({ section_width: -245, aspect_ratio: 45, rim_diameter: 18 }).success).toBe(false);
+  });
+  it('rejects zero section_width', () => {
+    expect(searchSchema.safeParse({ section_width: 0, aspect_ratio: 45, rim_diameter: 18 }).success).toBe(false);
+  });
+  it('accepts valid section_width', () => {
+    expect(searchSchema.safeParse({ section_width: 245, aspect_ratio: 45, rim_diameter: 18 }).success).toBe(true);
+  });
+  it('rejects aspect_ratio of 0', () => {
+    expect(searchSchema.safeParse({ section_width: 245, aspect_ratio: 0, rim_diameter: 18 }).success).toBe(false);
+  });
+  it('rejects aspect_ratio above 100', () => {
+    expect(searchSchema.safeParse({ section_width: 245, aspect_ratio: 101, rim_diameter: 18 }).success).toBe(false);
+  });
+  it('accepts aspect_ratio of 1', () => {
+    expect(searchSchema.safeParse({ section_width: 245, aspect_ratio: 1, rim_diameter: 18 }).success).toBe(true);
+  });
+  it('rejects negative rim_diameter', () => {
+    expect(searchSchema.safeParse({ section_width: 245, aspect_ratio: 45, rim_diameter: -18 }).success).toBe(false);
+  });
+  it('rejects limit of 0', () => {
+    expect(searchSchema.safeParse({ section_width: 245, aspect_ratio: 45, rim_diameter: 18, limit: 0 }).success).toBe(false);
+  });
+  it('rejects limit above 100', () => {
+    expect(searchSchema.safeParse({ section_width: 245, aspect_ratio: 45, rim_diameter: 18, limit: 101 }).success).toBe(false);
+  });
+  it('accepts limit 1-100', () => {
+    expect(searchSchema.safeParse({ section_width: 245, aspect_ratio: 45, rim_diameter: 18, limit: 50 }).success).toBe(true);
   });
 });

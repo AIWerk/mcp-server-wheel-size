@@ -10,8 +10,8 @@ export const searchByModelInput = {
   model: z.string().describe(
     'Model slug from list-models (e.g., "a4", "f-150"). Use list-models to get valid slugs for the given make+year.',
   ),
-  year: z.number().int().describe(
-    '4-digit model year (e.g., 2020). Use list-years to enumerate valid years for the given make.',
+  year: z.number().int().min(1900).max(2100).describe(
+    '4-digit model year 1900-2100 (e.g., 2020). Use list-years to enumerate valid years for the given make.',
   ),
   region: z.string().describe(
     'Market code from list-regions (e.g., "usdm" for North America, "eudm" for Europe, "jdm" for Japan). ' +
@@ -45,8 +45,8 @@ export const wheelUpstepsInput = {
   model: z.string().describe(
     'Model slug from list-models (e.g., "a4", "f-150").',
   ),
-  year: z.number().int().describe(
-    '4-digit model year (e.g., 2020).',
+  year: z.number().int().min(1900).max(2100).describe(
+    '4-digit model year 1900-2100 (e.g., 2020).',
   ),
   region: z.string().describe(
     'Market code from list-regions (e.g., "usdm", "eudm"). ' +

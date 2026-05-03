@@ -44,8 +44,8 @@ export const listModelsInput = {
   make: z.string().describe(
     'Manufacturer slug (e.g., "audi", "ford"). Get slugs from list-makes.',
   ),
-  year: z.number().int().describe(
-    '4-digit model year (e.g., 2020). Get valid years from list-years.',
+  year: z.number().int().min(1900).max(2100).describe(
+    '4-digit model year 1900-2100 (e.g., 2020). Get valid years from list-years.',
   ),
 };
 
@@ -64,8 +64,8 @@ export const listGenerationsInput = {
   model: z.string().describe(
     'Model slug (e.g., "a4", "3-series"). Get slugs from list-models.',
   ),
-  year: z.number().int().describe(
-    '4-digit model year (e.g., 2020). Get valid years from list-years.',
+  year: z.number().int().min(1900).max(2100).describe(
+    '4-digit model year 1900-2100 (e.g., 2020). Get valid years from list-years.',
   ),
 };
 
@@ -84,8 +84,8 @@ export const listModificationsInput = {
   model: z.string().describe(
     'Model slug (e.g., "a4", "3-series"). Get slugs from list-models.',
   ),
-  year: z.number().int().describe(
-    '4-digit model year (e.g., 2020). Get valid years from list-years.',
+  year: z.number().int().min(1900).max(2100).describe(
+    '4-digit model year 1900-2100 (e.g., 2020). Get valid years from list-years.',
   ),
   generation: z.string().describe(
     'Generation slug (e.g., "b9"). Get slugs from list-generations.',
