@@ -43,11 +43,13 @@ const cbOpt = z
   .describe('Centre bore diameter in mm (e.g. 66.5). Must be positive. Narrows results to matching bore size.');
 const fdOpt = z
   .number()
+  .positive()
   .optional()
-  .describe('Fastener thread diameter in mm. Filters by lug-bolt thread size.');
+  .describe('Fastener thread diameter in mm. Must be positive. Filters by lug-bolt thread size.');
 const fsPoke = z
   .number()
   .int()
+  .min(0)
   .optional()
   .describe(
     'Frontspace poke tolerance in mm (default 2). 0 = exact or safer only, no stick-out past the fender. ' +
@@ -56,6 +58,7 @@ const fsPoke = z
 const bsPush = z
   .number()
   .int()
+  .min(0)
   .optional()
   .describe(
     'Backspace push tolerance in mm (default 2). 0 = exact or safer only, no inward encroachment. ' +
@@ -79,9 +82,10 @@ const owTolerance = z
 const diameterRange = z
   .number()
   .int()
+  .min(0)
   .optional()
   .describe(
-    'Widen rim diameter search by ±N inches (default 0 = exact match only). ' +
+    'Widen rim diameter search by ±N inches, min 0 (default 0 = exact match only). ' +
     'E.g. diameterRange=1 on an 18-inch search also returns 17 and 19-inch options.',
   );
 const sortOpt = z

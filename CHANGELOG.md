@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-05-03
+
+### Fixed
+- `stud_holes` → `.int().min(3)`; `pcd` → `.positive()` in `by_rim.ts`
+- `fd`/`fdOpt` → `.positive()`; `fs_poke`/`bs_push`/`diameter_range` → `.min(0)` in `classified.ts`
+
+## [0.3.0] - 2026-05-03
+
 ### Fixed
 - Zod boundary validation on all numeric fitment fields: `rim_diameter`/`rim_width`/`section_width`/`overall_diameter`/`cb` → `.positive()`; `rim_offset` (ET) → `.min(-100).max(100)`; `aspect_ratio` → `.min(1).max(100)`; `year` → `.min(1900).max(2100)`; `limit` → `.min(1).max(100)`
 - Mutex cross-field validation in handlers: `rim_offset` vs `rim_offset_min`/`rim_offset_max` (XOR); `cb` vs `cb_min`/`cb_max` (XOR); `overall_diameter` vs `section_width`/`aspect_ratio` (XOR)

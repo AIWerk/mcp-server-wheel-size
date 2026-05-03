@@ -8,6 +8,7 @@ import {
   listRimWidths,
   searchByRim,
   searchModificationsByRim,
+  listRimBoltPatternsInput,
   listRimCentresBoresInput,
   searchByRimInput,
   searchModificationsByRimInput,
@@ -250,5 +251,31 @@ describe('searchModificationsByRim mutex', () => {
     await expect(
       searchModificationsByRim({ make: 'audi', model: 'a4', bolt_pattern: '5x112', cb: 66.5, cb_min: 60 }),
     ).rejects.toThrow('Cannot combine cb');
+  });
+});
+
+describe('by_rim stud_holes and pcd boundary validation', () => {
+  const boltPatternSchema = z.object(listRimBoltPatternsInput);
+
+  it('rejects stud_holes below 3', () => {
+    expect(boltPatternSchema.safeParse({ stud_holes: 2 }).success).toBe(false);
+  });
+  it('rejects stud_holes of 0', () => {
+    expect(boltPatternSchema.safeParse({ stud_holes: 0 }).success).toBe(false);
+  });
+  it('accepts stud_holes of 3', () => {
+    expect(boltPatternSchema.safeParse({ stud_holes: 3 }).success).toBe(true);
+  });
+  it('accepts stud_holes of 5', () => {
+    expect(boltPatternSchema.safeParse({ stud_holes: 5 }).success).toBe(true);
+  });
+  it('rejects non-positive pcd', () => {
+    expect(boltPatternSchema.safeParse({ pcd: 0 }).success).toBe(false);
+  });
+  it('rejects negative pcd', () => {
+    expect(boltPatternSchema.safeParse({ pcd: -112 }).success).toBe(false);
+  });
+  it('accepts positive pcd', () => {
+    expect(boltPatternSchema.safeParse({ pcd: 112 }).success).toBe(true);
   });
 });

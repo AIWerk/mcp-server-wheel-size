@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import * as z from 'zod';
 import {
   searchClassifiedPackages,
   searchModificationsByClassifiedPackage,
@@ -6,6 +7,7 @@ import {
   searchClassifiedRims,
   searchModificationsByClassifiedRim,
   searchClassifiedTires,
+  searchClassifiedPackagesInput,
 } from '../tools/classified.js';
 import { WheelSizeApiError } from '../api.js';
 
@@ -131,5 +133,50 @@ describe('searchClassifiedTires', () => {
     await expect(
       searchClassifiedTires({ section_width: 0, aspect_ratio: 0, rim_diameter: 0 }),
     ).rejects.toThrow(WheelSizeApiError);
+  });
+});
+
+// ---- Boundary validation (Zod schema) ----
+
+describe('classified schema boundary validation', () => {
+  const schema = z.object(searchClassifiedPackagesInput);
+  const validBase = {
+    bolt_pattern: '5x112',
+    rim_diameter: 18,
+    rim_width: 8.0,
+    rim_offset: 35,
+    section_width: 245,
+    aspect_ratio: 45,
+  };
+
+  it('rejects negative fd', () => {
+    expect(schema.safeParse({ ...validBase, fd: -1 }).success).toBe(false);
+  });
+  it('rejects zero fd', () => {
+    expect(schema.safeParse({ ...validBase, fd: 0 }).success).toBe(false);
+  });
+  it('accepts positive fd', () => {
+    expect(schema.safeParse({ ...validBase, fd: 14 }).success).toBe(true);
+  });
+  it('rejects negative fs_poke', () => {
+    expect(schema.safeParse({ ...validBase, fs_poke: -1 }).success).toBe(false);
+  });
+  it('accepts fs_poke of 0', () => {
+    expect(schema.safeParse({ ...validBase, fs_poke: 0 }).success).toBe(true);
+  });
+  it('rejects negative bs_push', () => {
+    expect(schema.safeParse({ ...validBase, bs_push: -1 }).success).toBe(false);
+  });
+  it('accepts bs_push of 0', () => {
+    expect(schema.safeParse({ ...validBase, bs_push: 0 }).success).toBe(true);
+  });
+  it('rejects negative diameter_range', () => {
+    expect(schema.safeParse({ ...validBase, diameter_range: -1 }).success).toBe(false);
+  });
+  it('accepts diameter_range of 0', () => {
+    expect(schema.safeParse({ ...validBase, diameter_range: 0 }).success).toBe(true);
+  });
+  it('accepts diameter_range of 1', () => {
+    expect(schema.safeParse({ ...validBase, diameter_range: 1 }).success).toBe(true);
   });
 });

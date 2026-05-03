@@ -64,12 +64,14 @@ const cbMax = z
 const studHoles = z
   .number()
   .int()
+  .min(3)
   .optional()
-  .describe('Number of stud holes (lug count, e.g. 4 or 5).');
+  .describe('Number of stud holes (lug count, e.g. 4 or 5). Minimum 3.');
 const pcd = z
   .number()
+  .positive()
   .optional()
-  .describe('Pitch circle diameter in mm (e.g. 112). Part of bolt pattern. Use bolt_pattern when possible.');
+  .describe('Pitch circle diameter in mm (e.g. 112). Must be positive. Part of bolt pattern. Use bolt_pattern when possible.');
 const region = z
   .string()
   .optional()
