@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Wheel-Size.com API MCP server — 32 read-only tools for vehicle wheel and tyre fitment data.
+// Wheel-Size.com API MCP server: 32 read-only tools for vehicle wheel and tyre fitment data.
 
 import { realpathSync } from 'fs';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
@@ -78,7 +78,7 @@ export function toolError(error: unknown) {
     const body =
       error.body === null || error.body === undefined
         ? ''
-        : ` — body: ${JSON.stringify(error.body)}`;
+        : `, body: ${JSON.stringify(error.body)}`;
     message = `${error.message}${body}`;
   } else if (error instanceof Error) {
     message = error.message;
@@ -127,7 +127,7 @@ export function createServer() {
       description:
         'List all vehicle manufacturers (makes) available in a given market region. ' +
         'Returns slugs used as the "make" input for subsequent tools. ' +
-        'Make availability is region-dependent — the same brand may have different slugs across markets.',
+        'Make availability is region-dependent, the same brand may have different slugs across markets.',
       inputSchema: listMakesInput,
       annotations: { title: 'List Makes', readOnlyHint: true, openWorldHint: true },
     },
@@ -192,7 +192,7 @@ export function createServer() {
         'Returns per-trim fitment data including: tyre size (e.g., "245/45R18"), rim spec (e.g., "8Jx18 ET39"), ' +
         'bolt pattern / PCD (e.g., "5x112"), centre bore (CB in mm), and whether the fitment is OEM or aftermarket. ' +
         'This is the primary tool for fitment lookups. ' +
-        'An empty data array means no fitment data exists for this make+region combination — not an API error.',
+        'An empty data array means no fitment data exists for this make+region combination. Not an API error.',
       inputSchema: searchByModelInput,
       annotations: { title: 'Search by Model', readOnlyHint: true, openWorldHint: true },
     },
@@ -213,7 +213,7 @@ export function createServer() {
     wrap(wheelUpsteps),
   );
 
-  // ---- By rim — reverse lookup (7) ----
+  // ---- By rim: reverse lookup (7) ----
 
   server.registerTool(
     'list-rim-bolt-patterns',
@@ -298,14 +298,14 @@ export function createServer() {
       description:
         'Find specific trim/modification variants of a known make+model that are compatible with a given rim spec. ' +
         'Required: make, model, bolt_pattern. Optional: rim dimensions, offset, centre bore, region. ' +
-        'More granular than search-by-rim — use when you already know the vehicle and want to check trim-level fitment.',
+        'More granular than search-by-rim. Use when you already know the vehicle and want to check trim-level fitment.',
       inputSchema: searchModificationsByRimInput,
       annotations: { title: 'Search Modifications by Rim', readOnlyHint: true, openWorldHint: true },
     },
     wrap(searchModificationsByRim),
   );
 
-  // ---- By tyre — reverse lookup (5) ----
+  // ---- By tyre: reverse lookup (5) ----
 
   server.registerTool(
     'list-tire-aspect-ratios',
@@ -365,7 +365,7 @@ export function createServer() {
         'Find specific trim/modification variants of a known make+model compatible with a given tyre size. ' +
         'Required: make, model, section_width (mm), aspect_ratio (%), rim_diameter (inches). ' +
         'Optional: region, limit, offset. ' +
-        'More granular than search-by-tire — use when you already know the vehicle.',
+        'More granular than search-by-tire. Use when you already know the vehicle.',
       inputSchema: searchModificationsByTireInput,
       annotations: { title: 'Search Modifications by Tire', readOnlyHint: true, openWorldHint: true },
     },
@@ -418,7 +418,7 @@ export function createServer() {
       description:
         'Find all vehicles compatible with a given high-flotation (HF) tyre size. ' +
         'For pickup trucks and off-road vehicles. HF size format: OD x SW R RD (e.g. 33x12.5R15). ' +
-        'Required: overall_diameter (inches), section_width (INCHES — not mm!), rim_diameter (inches). ' +
+        'Required: overall_diameter (inches), section_width (INCHES, not mm!), rim_diameter (inches). ' +
         'Optional: region, limit, offset.',
       inputSchema: searchByHfTireInput,
       annotations: { title: 'Search by HF Tire', readOnlyHint: true, openWorldHint: true },
@@ -448,7 +448,7 @@ export function createServer() {
         'Find aftermarket wheel+tyre package products (rim+tyre combos sold together) compatible with a given fitment spec. ' +
         'Required: bolt_pattern, rim_diameter (inches), rim_width (inches), rim_offset (ET mm), section_width (mm), aspect_ratio (%). ' +
         'Optional: cb (centre bore mm), fd (fastener diameter mm), fs_poke/bs_push (fitment tolerances mm), ' +
-        'od_tolerance (decimal 0–0.05), ow_tolerance (decimal 0–0.03), diameter_range (±inches), sort, limit, offset. ' +
+        'od_tolerance (decimal 0-0.05), ow_tolerance (decimal 0-0.03), diameter_range (+-inches), sort, limit, offset. ' +
         'Returns product listings with SKU and compatibility data.',
       inputSchema: searchClassifiedPackagesInput,
       annotations: { title: 'Search Classified Packages', readOnlyHint: true, openWorldHint: true },
@@ -532,7 +532,7 @@ export function createServer() {
     {
       description:
         'Get computed geometry and population statistics for a given wheel/tyre specification. ' +
-        'All fields optional — provide as many as known for precise results. ' +
+        'All fields optional. Provide as many as known for precise results. ' +
         'Returns geometry hints (backspace, frontspace, clearance estimates), population stats (how many vehicles use this spec), ' +
         'and optional human-readable fitment hints when hints=true. ' +
         'Useful for explaining fitment math to users or validating a spec before ordering.',

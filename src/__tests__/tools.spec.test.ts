@@ -24,14 +24,14 @@ describe('wheelSpecMetadata', () => {
     expect((r as { rim_diameter: number }).rim_diameter).toBe(18);
   });
 
-  it('returns data with all-optional args — no required params', async () => {
+  it('returns data with all-optional args, no required params', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ computed: {} }), {
         status: 200,
         headers: { 'content-type': 'application/json' },
       }),
     );
-    // All args optional — empty args must work
+    // All args optional. empty args must work
     const r = await wheelSpecMetadata({});
     expect(r).toBeDefined();
   });

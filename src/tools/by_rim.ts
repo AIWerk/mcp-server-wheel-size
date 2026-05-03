@@ -58,7 +58,7 @@ const studHoles = z
 const pcd = z
   .number()
   .optional()
-  .describe('Pitch circle diameter in mm (e.g. 112). Part of bolt pattern — use bolt_pattern when possible.');
+  .describe('Pitch circle diameter in mm (e.g. 112). Part of bolt pattern. Use bolt_pattern when possible.');
 const region = z
   .string()
   .optional()
@@ -69,7 +69,7 @@ const limitOpt = z
   .min(0)
   .max(100)
   .optional()
-  .describe('Maximum results to return (0–100). Defaults to API default when omitted.');
+  .describe('Maximum results to return (0-100). Defaults to API default when omitted.');
 const offsetOpt = z
   .number()
   .int()

@@ -33,7 +33,7 @@ const limitOpt = z
   .min(0)
   .max(100)
   .optional()
-  .describe('Maximum results to return (0–100).');
+  .describe('Maximum results to return (0-100).');
 const offsetOpt = z
   .number()
   .int()

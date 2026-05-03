@@ -3,7 +3,7 @@ import { fetchApi } from '../api.js';
 
 // wheel-spec-metadata
 // Returns computed geometry and population statistics for a given wheel/tyre spec.
-// All fields are optional — provide as many as known for more precise results.
+// All fields are optional. Provide as many as known for more precise results.
 
 export const wheelSpecMetadataInput = {
   rim_diameter: z

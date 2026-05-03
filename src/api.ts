@@ -1,5 +1,5 @@
 // Wheel-Size.com API v2 client.
-// Auth: user_key query parameter (NOT a header — a common pitfall).
+// Auth: user_key query parameter (NOT a header, a common pitfall).
 
 export class WheelSizeConfigError extends Error {
   constructor(message: string) {
@@ -70,7 +70,7 @@ type Query = Record<string, string | number | boolean | undefined | null>;
 
 export function buildUrl(path: string, query: Query = {}): string {
   const url = new URL(`${BASE_URL}${path}`);
-  // Auth: user_key as query param — NOT a header
+  // Auth: user_key as query param, NOT a header
   url.searchParams.set('user_key', getApiKey());
   for (const [key, value] of Object.entries(query)) {
     if (value !== undefined && value !== null) {

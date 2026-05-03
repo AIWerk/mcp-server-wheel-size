@@ -1,7 +1,7 @@
 import * as z from 'zod';
 import { fetchApi } from '../api.js';
 
-// High-flotation (HF) tyre tools — for pickup trucks and off-road vehicles.
+// High-flotation (HF) tyre tools for pickup trucks and off-road vehicles.
 // HF tyre sizes use imperial notation: overall_diameter x section_width R rim_diameter (e.g. 33x12.5R15).
 // IMPORTANT: section_width here is in INCHES (not mm as in standard by_tire tools).
 
@@ -47,7 +47,7 @@ const limitOpt = z
   .min(0)
   .max(100)
   .optional()
-  .describe('Maximum results to return (0–100).');
+  .describe('Maximum results to return (0-100).');
 const offsetOpt = z
   .number()
   .int()

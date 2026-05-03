@@ -46,7 +46,7 @@ describe('toolError', () => {
     expect(result.content[0].text).toMatch(/bad key/);
   });
 
-  it('surfaces 401/403 hint from api.ts message — hint must reach the agent', () => {
+  it('surfaces 401/403 hint from api.ts message, hint must reach the agent', () => {
     const hint = 'Check WHEEL_SIZE_API_KEY validity at https://developer.wheel-size.com/';
     const msg = `Wheel-Size API GET /regions/ failed: 403 Forbidden. ${hint}`;
     const result = toolError(

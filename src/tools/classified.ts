@@ -42,7 +42,7 @@ const fsPoke = z
   .int()
   .optional()
   .describe(
-    'Frontspace poke tolerance in mm (default 2). 0 = exact or safer only — no stick-out past the fender. ' +
+    'Frontspace poke tolerance in mm (default 2). 0 = exact or safer only, no stick-out past the fender. ' +
     'Positive values allow increasing amounts of wheel poke.',
   );
 const bsPush = z
@@ -50,7 +50,7 @@ const bsPush = z
   .int()
   .optional()
   .describe(
-    'Backspace push tolerance in mm (default 2). 0 = exact or safer only — no inward encroachment. ' +
+    'Backspace push tolerance in mm (default 2). 0 = exact or safer only, no inward encroachment. ' +
     'Positive values allow more clearance margin.',
   );
 const odTolerance = z
@@ -59,7 +59,7 @@ const odTolerance = z
   .max(0.05)
   .optional()
   .describe(
-    'Overall diameter tolerance as a decimal fraction (0–0.05, default 0.01 = 1%). ' +
+    'Overall diameter tolerance as a decimal fraction (0-0.05, default 0.01 = 1%). ' +
     'Controls how closely the product OD must match the vehicle spec.',
   );
 const owTolerance = z
@@ -67,7 +67,7 @@ const owTolerance = z
   .min(0)
   .max(0.03)
   .optional()
-  .describe('Overall width tolerance as a decimal fraction (0–0.03, default 0).');
+  .describe('Overall width tolerance as a decimal fraction (0-0.03, default 0).');
 const diameterRange = z
   .number()
   .int()
@@ -79,7 +79,7 @@ const diameterRange = z
 const sortOpt = z
   .string()
   .optional()
-  .describe('Sort order: "name" (A–Z by make/model), "fitment" (closest frontspace delta), "load" (heaviest first).');
+  .describe('Sort order: "name" (A-Z by make/model), "fitment" (closest frontspace delta), "load" (heaviest first).');
 const limitOpt = z
   .number()
   .int()

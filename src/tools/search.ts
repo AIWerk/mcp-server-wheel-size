@@ -1,11 +1,11 @@
 import * as z from 'zod';
 import { fetchApi } from '../api.js';
 
-// search-by-model — primary fitment lookup tool
+// search-by-model: primary fitment lookup tool
 
 export const searchByModelInput = {
   make: z.string().describe(
-    'Manufacturer slug from list-makes (e.g., "audi", "ford"). Region-dependent — slugs can differ by market.',
+    'Manufacturer slug from list-makes (e.g., "audi", "ford"). Region-dependent, slugs can differ by market.',
   ),
   model: z.string().describe(
     'Model slug from list-models (e.g., "a4", "f-150"). Use list-models to get valid slugs for the given make+year.',
@@ -15,7 +15,7 @@ export const searchByModelInput = {
   ),
   region: z.string().describe(
     'Market code from list-regions (e.g., "usdm" for North America, "eudm" for Europe, "jdm" for Japan). ' +
-    'OEM wheel specs differ by market — always specify the correct region. ' +
+    'OEM wheel specs differ by market. Always specify the correct region. ' +
     'An empty result (data: []) means no data for this make+region combo, not an error.',
   ),
 };
@@ -36,7 +36,7 @@ export async function searchByModel(args: SearchByModelArgs) {
   });
 }
 
-// wheel-upsteps — aftermarket fitment upgrade suggestions
+// wheel-upsteps: aftermarket fitment upgrade suggestions
 
 export const wheelUpstepsInput = {
   make: z.string().describe(
