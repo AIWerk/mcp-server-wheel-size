@@ -1,6 +1,6 @@
 {
   "name": "@aiwerk/mcp-server-wheel-size",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Wheel-Size.com API MCP server — vehicle wheel, tyre and fitment data lookup",
   "type": "module",
   "main": "dist/src/server.js",
