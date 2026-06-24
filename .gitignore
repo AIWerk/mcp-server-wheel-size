@@ -2,3 +2,6 @@ node_modules/
 dist/
 *.env
 .env
+
+# npm auth token (never commit)
+.npmrc

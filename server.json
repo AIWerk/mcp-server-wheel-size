@@ -1,0 +1,30 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.AIWerk/mcp-server-wheel-size",
+  "description": "Wheel-Size.com fitment API: OEM and aftermarket wheel and tyre data for 100k+ vehicles (read-only).",
+  "version": "0.3.3",
+  "repository": {
+    "url": "https://github.com/AIWerk/mcp-server-wheel-size",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@aiwerk/mcp-server-wheel-size",
+      "version": "0.3.3",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "WHEEL_SIZE_API_KEY",
+          "description": "Wheel-Size.com API key. Get one at api.wheel-size.com.",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}
